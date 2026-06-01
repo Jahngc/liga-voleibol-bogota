@@ -140,6 +140,37 @@ public class MatchesControllerTests
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task PatchResult_ReturnsConflict_WhenAlreadyCompleted()
+    {
+        var client = CreateClient();
+        var (home, away) = await CreateTwoTeams(client);
+        var match = await CreateMatch(client, home.Id, away.Id);
+        await client.PatchAsJsonAsync($"/api/matches/{match.Id}/result", new MatchResultRequest(3, 1));
+        var response = await client.PatchAsJsonAsync($"/api/matches/{match.Id}/result", new MatchResultRequest(2, 3));
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetMatches_ReturnsBadRequest_WhenInvalidStatus()
+    {
+        var client = CreateClient();
+        var response = await client.GetAsync("/api/matches?status=invalid");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task PutMatch_ReturnsConflict_WhenMatchCompleted()
+    {
+        var client = CreateClient();
+        var (home, away) = await CreateTwoTeams(client);
+        var match = await CreateMatch(client, home.Id, away.Id);
+        await client.PatchAsJsonAsync($"/api/matches/{match.Id}/result", new MatchResultRequest(3, 0));
+        var update = new MatchRequest(home.Id, away.Id, DateTime.UtcNow.AddDays(1), null);
+        var response = await client.PutAsJsonAsync($"/api/matches/{match.Id}", update);
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
     private static async Task<(TeamResponse home, TeamResponse away)> CreateTwoTeams(
         HttpClient client, string homeName = "Leones", string awayName = "Aguilas")
     {

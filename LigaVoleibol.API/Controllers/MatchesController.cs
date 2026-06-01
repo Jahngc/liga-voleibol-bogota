@@ -27,8 +27,12 @@ public class MatchesController : ControllerBase
         if (teamId.HasValue)
             query = query.Where(m => m.HomeTeamId == teamId.Value || m.AwayTeamId == teamId.Value);
 
-        if (!string.IsNullOrEmpty(status) && Enum.TryParse<MatchStatus>(status, true, out var parsedStatus))
+        if (!string.IsNullOrEmpty(status))
+        {
+            if (!Enum.TryParse<MatchStatus>(status, true, out var parsedStatus))
+                return BadRequest(new { error = $"Invalid status '{status}'. Valid values: Scheduled, Completed." });
             query = query.Where(m => m.Status == parsedStatus);
+        }
 
         var matches = await query.Select(m => ToResponse(m)).ToListAsync();
         return Ok(matches);
@@ -73,6 +77,9 @@ public class MatchesController : ControllerBase
 
         if (match is null) return NotFound();
 
+        if (match.Status == MatchStatus.Completed)
+            return Conflict(new { error = "Cannot update a completed match." });
+
         if (request.HomeTeamId == request.AwayTeamId)
             return BadRequest(new { error = "Home and away teams must be different." });
 
@@ -97,6 +104,9 @@ public class MatchesController : ControllerBase
             .FirstOrDefaultAsync(m => m.Id == id);
 
         if (match is null) return NotFound();
+
+        if (match.Status == MatchStatus.Completed)
+            return Conflict(new { error = "Match result has already been registered." });
 
         match.HomeScore = request.HomeScore;
         match.AwayScore = request.AwayScore;
