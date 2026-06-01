@@ -30,10 +30,26 @@ app.UseCors("AllowAngular");
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
+// Retry migration to handle transient DB startup delays
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    var retries = 5;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch (Exception ex) when (retries > 1)
+        {
+            retries--;
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning("DB migration failed, retrying ({retries} left): {msg}", retries, ex.Message);
+            Thread.Sleep(3000);
+        }
+    }
 }
 
 app.Run();
