@@ -4,8 +4,6 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace LigaVoleibol.API.Migrations
 {
     /// <inheritdoc />
@@ -84,31 +82,6 @@ namespace LigaVoleibol.API.Migrations
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Teams",
-                columns: new[] { "Id", "Category", "CreatedAt", "LogoUrl", "Name", "Venue" },
-                values: new object[,]
-                {
-                    { 1, "Masculino", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Leones de Bogotá", "Coliseo El Campin" },
-                    { 2, "Femenino", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Águilas Doradas", "Palacio de los Deportes" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Matches",
-                columns: new[] { "Id", "AwayScore", "AwayTeamId", "HomeScore", "HomeTeamId", "ScheduledAt", "Status", "Venue" },
-                values: new object[] { 1, null, 2, null, 1, new DateTime(2026, 6, 15, 18, 0, 0, 0, DateTimeKind.Utc), 0, "Coliseo El Campin" });
-
-            migrationBuilder.InsertData(
-                table: "Players",
-                columns: new[] { "Id", "FirstName", "JerseyNumber", "LastName", "PhotoUrl", "Position", "TeamId" },
-                values: new object[,]
-                {
-                    { 1, "Carlos", 7, "Pérez", null, "Libero", 1 },
-                    { 2, "Andrés", 12, "García", null, "Central", 1 },
-                    { 3, "María", 4, "López", null, "Opuesto", 2 },
-                    { 4, "Laura", 9, "Martínez", null, "Punta", 2 }
                 });
 
             migrationBuilder.CreateIndex(

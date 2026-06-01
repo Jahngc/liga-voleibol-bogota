@@ -7,8 +7,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var isTestEnvironment = builder.Environment.IsEnvironment("Testing");
+var testDbName = isTestEnvironment ? "TestDb_" + Guid.NewGuid() : null;
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    if (isTestEnvironment)
+        options.UseInMemoryDatabase(testDbName!);
+    else
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddCors(options =>
 {
@@ -30,25 +37,33 @@ app.UseCors("AllowAngular");
 app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 
-// Retry migration to handle transient DB startup delays
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var retries = 5;
-    while (retries > 0)
+    if (db.Database.ProviderName?.Contains("InMemory") == true)
     {
-        try
+        db.Database.EnsureCreated();
+        // No seed in tests — each test manages its own data
+    }
+    else
+    {
+        var retries = 5;
+        while (retries > 0)
         {
-            db.Database.Migrate();
-            break;
+            try
+            {
+                db.Database.Migrate();
+                break;
+            }
+            catch (Exception ex) when (retries > 1)
+            {
+                retries--;
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogWarning("DB migration failed, retrying ({retries} left): {msg}", retries, ex.Message);
+                Thread.Sleep(3000);
+            }
         }
-        catch (Exception ex) when (retries > 1)
-        {
-            retries--;
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogWarning("DB migration failed, retrying ({retries} left): {msg}", retries, ex.Message);
-            Thread.Sleep(3000);
-        }
+        DbSeeder.Seed(db);
     }
 }
 

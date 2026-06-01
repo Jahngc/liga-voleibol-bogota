@@ -59,17 +59,6 @@ namespace LigaVoleibol.API.Migrations
                     b.HasIndex("HomeTeamId");
 
                     b.ToTable("Matches");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AwayTeamId = 2,
-                            HomeTeamId = 1,
-                            ScheduledAt = new DateTime(2026, 6, 15, 18, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 0,
-                            Venue = "Coliseo El Campin"
-                        });
                 });
 
             modelBuilder.Entity("LigaVoleibol.API.Models.Player", b =>
@@ -109,44 +98,6 @@ namespace LigaVoleibol.API.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("Players");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            FirstName = "Carlos",
-                            JerseyNumber = 7,
-                            LastName = "Pérez",
-                            Position = "Libero",
-                            TeamId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            FirstName = "Andrés",
-                            JerseyNumber = 12,
-                            LastName = "García",
-                            Position = "Central",
-                            TeamId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            FirstName = "María",
-                            JerseyNumber = 4,
-                            LastName = "López",
-                            Position = "Opuesto",
-                            TeamId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            FirstName = "Laura",
-                            JerseyNumber = 9,
-                            LastName = "Martínez",
-                            Position = "Punta",
-                            TeamId = 2
-                        });
                 });
 
             modelBuilder.Entity("LigaVoleibol.API.Models.Team", b =>
@@ -180,24 +131,6 @@ namespace LigaVoleibol.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Teams");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Category = "Masculino",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Leones de Bogotá",
-                            Venue = "Coliseo El Campin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Category = "Femenino",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Águilas Doradas",
-                            Venue = "Palacio de los Deportes"
-                        });
                 });
 
             modelBuilder.Entity("LigaVoleibol.API.Models.Match", b =>
