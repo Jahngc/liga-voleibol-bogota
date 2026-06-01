@@ -101,6 +101,17 @@ public class PlayersControllerTests
     }
 
     [Fact]
+    public async Task PutPlayer_ReturnsBadRequest_WhenNewTeamNotFound()
+    {
+        var client = CreateClient();
+        var team = await CreateTeam(client, "Equipo H");
+        var player = await CreatePlayer(client, "X", "Y", team.Id, 2);
+        var update = new PlayerRequest("X", "Y", null, 2, 99999, null);
+        var response = await client.PutAsJsonAsync($"/api/players/{player.Id}", update);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task DeletePlayer_ReturnsNotFound_WhenMissing()
     {
         var client = CreateClient();

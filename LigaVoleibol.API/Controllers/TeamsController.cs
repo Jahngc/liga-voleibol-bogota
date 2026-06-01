@@ -63,9 +63,10 @@ public class TeamsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var team = await _db.Teams.FindAsync(id);
+        var team = await _db.Teams.Include(t => t.Players).FirstOrDefaultAsync(t => t.Id == id);
         if (team is null) return NotFound();
 
+        _db.Players.RemoveRange(team.Players);
         _db.Teams.Remove(team);
         await _db.SaveChangesAsync();
         return NoContent();

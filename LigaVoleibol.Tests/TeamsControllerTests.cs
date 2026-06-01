@@ -94,6 +94,19 @@ public class TeamsControllerTests
     }
 
     [Fact]
+    public async Task DeleteTeam_RemovesPlayers_WhenTeamHasPlayers()
+    {
+        var client = CreateClient();
+        var team = await CreateTeam(client, "ConJugadores");
+        await client.PostAsJsonAsync("/api/players", new PlayerRequest("A", "B", null, 1, team.Id, null));
+        var deleteResponse = await client.DeleteAsync($"/api/teams/{team.Id}");
+        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+        var playersResponse = await client.GetAsync($"/api/players?teamId={team.Id}");
+        var players = await playersResponse.Content.ReadFromJsonAsync<List<PlayerResponse>>();
+        Assert.Empty(players!);
+    }
+
+    [Fact]
     public async Task PostTeam_ReturnsBadRequest_WhenNameMissing()
     {
         var client = CreateClient();

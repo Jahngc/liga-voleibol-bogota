@@ -54,6 +54,13 @@ public class PlayersController : ControllerBase
         var player = await _db.Players.FindAsync(id);
         if (player is null) return NotFound();
 
+        if (request.TeamId != player.TeamId)
+        {
+            var teamExists = await _db.Teams.AnyAsync(t => t.Id == request.TeamId);
+            if (!teamExists)
+                return BadRequest(new { error = $"Team with id {request.TeamId} not found." });
+        }
+
         player.FirstName = request.FirstName;
         player.LastName = request.LastName;
         player.Position = request.Position;
