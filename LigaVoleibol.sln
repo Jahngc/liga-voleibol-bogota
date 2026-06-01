@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LigaVoleibol.API", "LigaVoleibol.API\LigaVoleibol.API.csproj", "{9A81C4AB-C77D-4956-BBCD-33AE7326C931}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LigaVoleibol.Tests", "LigaVoleibol.Tests\LigaVoleibol.Tests.csproj", "{30331193-3125-4DD3-8B93-FC4E869BB1E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A81C4AB-C77D-4956-BBCD-33AE7326C931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A81C4AB-C77D-4956-BBCD-33AE7326C931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A81C4AB-C77D-4956-BBCD-33AE7326C931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A81C4AB-C77D-4956-BBCD-33AE7326C931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30331193-3125-4DD3-8B93-FC4E869BB1E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30331193-3125-4DD3-8B93-FC4E869BB1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30331193-3125-4DD3-8B93-FC4E869BB1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30331193-3125-4DD3-8B93-FC4E869BB1E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
