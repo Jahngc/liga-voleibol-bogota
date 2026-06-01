@@ -20,6 +20,7 @@ public record MatchRequest(
     [MaxLength(150)] string? Venue
 );
 
+// HomeScore/AwayScore represent sets won (0-3 typical, max 5 in best-of-5 format)
 public record MatchResultRequest(
     [Range(0, 5)] int HomeScore,
     [Range(0, 5)] int AwayScore
